@@ -20,17 +20,17 @@ void vsclean(vector <vector <step*> >& c) {
 }
 void L_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left_W) {
 	if (size(c) == 0) {
-		c.push_back(newstep(left_W, p->width + left_W, p->height)); //ставим первый прямоугольник в левый нижний угол
+		c.push_back(newstep(left_W, p->width + left_W, p->height)); //СЃС‚Р°РІРёРј РїРµСЂРІС‹Р№ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє РІ Р»РµРІС‹Р№ РЅРёР¶РЅРёР№ СѓРіРѕР»
 	}
 
-	else if (!flag || s - 1 == size(c)) { //далее прямоугольники первой ветки ИЛИ прямоугольники под еоторыми ниже нет ничего кроме оси X ставятся друг за другом вплотную по оси(за исключением второго случая)
+	else if (!flag || s - 1 == size(c)) { //Г¤Г Г«ГҐГҐ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГЁ ГЇГҐГ°ГўГ®Г© ГўГҐГІГЄГЁ Г€Г‹Г€ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГЁ ГЇГ®Г¤ ГҐГ®ГІГ®Г°Г»Г¬ГЁ Г­ГЁГ¦ГҐ Г­ГҐГІ Г­ГЁГ·ГҐГЈГ® ГЄГ°Г®Г¬ГҐ Г®Г±ГЁ X Г±ГІГ ГўГїГІГ±Гї Г¤Г°ГіГЈ Г§Г  Г¤Г°ГіГЈГ®Г¬ ГўГЇГ«Г®ГІГ­ГіГѕ ГЇГ® Г®Г±ГЁ(Г§Г  ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГҐГ¬ ГўГІГ®Г°Г®ГЈГ® Г±Г«ГіГ·Г Гї)
 		c.push_back(newstep(c[s - 2]->right, c[s - 2]->right + p->width, p->height));
 	}
 
-	else if (flag) { //если новая ветка (то есть если прочитали несколько 1 ( в кол-ве меньшем чем нулей) и потом читаем 0
-		int j = s - 1; //номер ступеньки на которую складываем прямоугольник
-		int max_h = c[j]->top; //высота этой ступеньки (пока что максимальная)
-		while (j < size(c) && p->width  > c[j]->right - c[s - 1]->left) { //просматриваем все ступеньки и смотрим в какую наиболее высокую будет упираться нынешний прямоугольник, исходя из его высоты
+	else if (flag) { //ГҐГ±Г«ГЁ Г­Г®ГўГ Гї ГўГҐГІГЄГ  (ГІГ® ГҐГ±ГІГј ГҐГ±Г«ГЁ ГЇГ°Г®Г·ГЁГІГ Г«ГЁ Г­ГҐГ±ГЄГ®Г«ГјГЄГ® 1 ( Гў ГЄГ®Г«-ГўГҐ Г¬ГҐГ­ГјГёГҐГ¬ Г·ГҐГ¬ Г­ГіГ«ГҐГ©) ГЁ ГЇГ®ГІГ®Г¬ Г·ГЁГІГ ГҐГ¬ 0
+		int j = s - 1; //Г­Г®Г¬ГҐГ° Г±ГІГіГЇГҐГ­ГјГЄГЁ Г­Г  ГЄГ®ГІГ®Г°ГіГѕ Г±ГЄГ«Г Г¤Г»ГўГ ГҐГ¬ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄ
+		int max_h = c[j]->top; //ГўГ»Г±Г®ГІГ  ГЅГІГ®Г© Г±ГІГіГЇГҐГ­ГјГЄГЁ (ГЇГ®ГЄГ  Г·ГІГ® Г¬Г ГЄГ±ГЁГ¬Г Г«ГјГ­Г Гї)
+		while (j < size(c) && p->width  > c[j]->right - c[s - 1]->left) { //ГЇГ°Г®Г±Г¬Г ГІГ°ГЁГўГ ГҐГ¬ ГўГ±ГҐ Г±ГІГіГЇГҐГ­ГјГЄГЁ ГЁ Г±Г¬Г®ГІГ°ГЁГ¬ Гў ГЄГ ГЄГіГѕ Г­Г ГЁГЎГ®Г«ГҐГҐ ГўГ»Г±Г®ГЄГіГѕ ГЎГіГ¤ГҐГІ ГіГЇГЁГ°Г ГІГјГ±Гї Г­Г»Г­ГҐГёГ­ГЁГ© ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄ, ГЁГ±ГµГ®Г¤Гї ГЁГ§ ГҐГЈГ® ГўГ»Г±Г®ГІГ»
 			if (j + 1 == size(c)) {
 				if (c[j]->top > max_h)
 					max_h = c[j]->top;
@@ -46,18 +46,18 @@ void L_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left
 		}
 		if (j == size(c))
 			j--;
-		//после этого цикла определилась высота ступеньки, в которую будет упираться нынешний прямоугольник
+		//ГЇГ®Г±Г«ГҐ ГЅГІГ®ГЈГ® Г¶ГЁГЄГ«Г  Г®ГЇГ°ГҐГ¤ГҐГ«ГЁГ«Г Г±Гј ГўГ»Г±Г®ГІГ  Г±ГІГіГЇГҐГ­ГјГЄГЁ, Гў ГЄГ®ГІГ®Г°ГіГѕ ГЎГіГ¤ГҐГІ ГіГЇГЁГ°Г ГІГјГ±Гї Г­Г»Г­ГҐГёГ­ГЁГ© ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄ
 		vector<step*> c_new;
 		int k = 0;
 		while (k < s - 1) {
 			c_new.push_back(newstep(c[k]->left, c[k]->right, c[k]->top));
 			k++;
-		} //составляем новый контур, все ступеньки, которые находились до того места куда упал нынешний прямоугольник, остаются на месте
-		c_new.push_back(newstep(c[s - 1]->left, p->width + c[s - 1]->left, p->height + max_h)); //добавляем новую ступеньку
-		if (p->width < c[j]->right - c[s - 1]->left) { //если новый прямоугольник закрыл следующую ступеньку не полностью
-			if (j == 0) //если это первая ступенька, то все, что под этим прямоугольником затирается, а высота и правый угол остаются незименными
+		} //Г±Г®Г±ГІГ ГўГ«ГїГҐГ¬ Г­Г®ГўГ»Г© ГЄГ®Г­ГІГіГ°, ГўГ±ГҐ Г±ГІГіГЇГҐГ­ГјГЄГЁ, ГЄГ®ГІГ®Г°Г»ГҐ Г­Г ГµГ®Г¤ГЁГ«ГЁГ±Гј Г¤Г® ГІГ®ГЈГ® Г¬ГҐГ±ГІГ  ГЄГіГ¤Г  ГіГЇГ Г« Г­Г»Г­ГҐГёГ­ГЁГ© ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄ, Г®Г±ГІГ ГѕГІГ±Гї Г­Г  Г¬ГҐГ±ГІГҐ
+		c_new.push_back(newstep(c[s - 1]->left, p->width + c[s - 1]->left, p->height + max_h)); //Г¤Г®ГЎГ ГўГ«ГїГҐГ¬ Г­Г®ГўГіГѕ Г±ГІГіГЇГҐГ­ГјГЄГі
+		if (p->width < c[j]->right - c[s - 1]->left) { //ГҐГ±Г«ГЁ Г­Г®ГўГ»Г© ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄ Г§Г ГЄГ°Г»Г« Г±Г«ГҐГ¤ГіГѕГ№ГіГѕ Г±ГІГіГЇГҐГ­ГјГЄГі Г­ГҐ ГЇГ®Г«Г­Г®Г±ГІГјГѕ
+			if (j == 0) //ГҐГ±Г«ГЁ ГЅГІГ® ГЇГҐГ°ГўГ Гї Г±ГІГіГЇГҐГ­ГјГЄГ , ГІГ® ГўГ±ГҐ, Г·ГІГ® ГЇГ®Г¤ ГЅГІГЁГ¬ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГ®Г¬ Г§Г ГІГЁГ°Г ГҐГІГ±Гї, Г  ГўГ»Г±Г®ГІГ  ГЁ ГЇГ°Г ГўГ»Г© ГіГЈГ®Г« Г®Г±ГІГ ГѕГІГ±Гї Г­ГҐГ§ГЁГ¬ГҐГ­Г­Г»Г¬ГЁ
 				c_new.push_back(newstep(left_W + p->width, c[j]->right, c[j]->top));
-			else //иначе левый угол начинается от окончания предыдущей ступеньки, остальное как предыдущем случае
+			else //ГЁГ­Г Г·ГҐ Г«ГҐГўГ»Г© ГіГЈГ®Г« Г­Г Г·ГЁГ­Г ГҐГІГ±Гї Г®ГІ Г®ГЄГ®Г­Г·Г Г­ГЁГї ГЇГ°ГҐГ¤Г»Г¤ГіГ№ГҐГ© Г±ГІГіГЇГҐГ­ГјГЄГЁ, Г®Г±ГІГ Г«ГјГ­Г®ГҐ ГЄГ ГЄ ГЇГ°ГҐГ¤Г»Г¤ГіГ№ГҐГ¬ Г±Г«ГіГ·Г ГҐ
 				c_new.push_back(newstep(c_new[size(c_new) - 1]->right, c[j]->right, c[j]->top));
 			if (c_new[size(c_new) - 1]->left == c_new[size(c_new) - 1]->right)
 				c_new.pop_back();
@@ -66,8 +66,8 @@ void L_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left
 		while (j + 1 < size(c)) {
 			c_new.push_back(newstep(c[j + 1]->left, c[j + 1]->right, c[j + 1]->top));
 			j++;
-		} //все следующие ступеньки сохраняются неизменно
-		//далее просто заменили контур
+		} //ГўГ±ГҐ Г±Г«ГҐГ¤ГіГѕГ№ГЁГҐ Г±ГІГіГЇГҐГ­ГјГЄГЁ Г±Г®ГµГ°Г Г­ГїГѕГІГ±Гї Г­ГҐГЁГ§Г¬ГҐГ­Г­Г®
+		//Г¤Г Г«ГҐГҐ ГЇГ°Г®Г±ГІГ® Г§Г Г¬ГҐГ­ГЁГ«ГЁ ГЄГ®Г­ГІГіГ°
 		int d = size(c) - 1;
 		int v = size(c_new) - 1;
 		for (int z = 0; z <= d; z++) {
@@ -122,15 +122,15 @@ vector<vector<step*>> L_decode(const vector<string>& T, vector<vector<rect*>>& r
 
 void B_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left_W) { // b r t
 	if (size(c) == 0) {
-		c.push_back(newstep(0, p->width + left_W, p->height)); //ставим первую ступеньку в (0,0)
+		c.push_back(newstep(0, p->width + left_W, p->height)); //Г±ГІГ ГўГЁГ¬ ГЇГҐГ°ГўГіГѕ Г±ГІГіГЇГҐГ­ГјГЄГі Гў (0,0)
 	}
 	else if (!flag || s - 1 == size(c)) {
-		c.push_back(newstep(c[s - 2]->top, p->width + left_W, c[s - 2]->top + p->height)); //добавляем ступеньки по первой ветке дерева
+		c.push_back(newstep(c[s - 2]->top, p->width + left_W, c[s - 2]->top + p->height)); //Г¤Г®ГЎГ ГўГ«ГїГҐГ¬ Г±ГІГіГЇГҐГ­ГјГЄГЁ ГЇГ® ГЇГҐГ°ГўГ®Г© ГўГҐГІГЄГҐ Г¤ГҐГ°ГҐГўГ 
 	}
 	else if (flag) {
 		int j = s - 1;
 		int max_r = c[j]->right;
-		while (j < size(c) && p->height > c[j]->top - c[s - 1]->left) { //в данное декодировке мы прямоугольники упираем максимально влево, а потом уже двигаем вниз
+		while (j < size(c) && p->height > c[j]->top - c[s - 1]->left) { //Гў Г¤Г Г­Г­Г®ГҐ Г¤ГҐГЄГ®Г¤ГЁГ°Г®ГўГЄГҐ Г¬Г» ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГЁ ГіГЇГЁГ°Г ГҐГ¬ Г¬Г ГЄГ±ГЁГ¬Г Г«ГјГ­Г® ГўГ«ГҐГўГ®, Г  ГЇГ®ГІГ®Г¬ ГіГ¦ГҐ Г¤ГўГЁГЈГ ГҐГ¬ ГўГ­ГЁГ§
 			if (j + 1 == size(c)) {
 				if (c[j]->right > max_r)
 					max_r = c[j]->right;
@@ -154,8 +154,8 @@ void B_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left
 			c_new.push_back(newstep(c[k]->left, c[k]->right, c[k]->top));
 			k++;
 		}
-		c_new.push_back(newstep(c[s - 1]->left, p->width + max_r, p->height + c[s - 1]->left));//не уверен
-		if (p->height < c[j]->top - c[s - 1]->left) { //если влезает по высоте
+		c_new.push_back(newstep(c[s - 1]->left, p->width + max_r, p->height + c[s - 1]->left));//Г­ГҐ ГіГўГҐГ°ГҐГ­
+		if (p->height < c[j]->top - c[s - 1]->left) { //ГҐГ±Г«ГЁ ГўГ«ГҐГ§Г ГҐГІ ГЇГ® ГўГ»Г±Г®ГІГҐ
 			if (j == 0)
 				c_new.push_back(newstep(p->height, c[j]->right, c[j]->top));
 			else
@@ -239,7 +239,7 @@ vector<string> Ltree_code(vector <vector<rect*>>& rectangles) {
 		//vector <rect*> r;
 		int i = 0;
 		int distance = 0;
-		int nodes_in_branch = 0; //кол-во вершин в ветке
+		int nodes_in_branch = 0; //ГЄГ®Г«-ГўГ® ГўГҐГ°ГёГЁГ­ Гў ГўГҐГІГЄГҐ
 		vector<int> index;
 		while (!rects[k].empty()) {
 			i = find_left_min_x(rects[k]);
@@ -309,7 +309,7 @@ vector<string> Btree_code(vector <vector<rect*>>& rectangles) {
 		//vector <rect*> r;
 		int i = 0;
 		int distance = 0;
-		int nodes_in_branch = 0; //кол-во вершин в ветке
+		int nodes_in_branch = 0; //ГЄГ®Г«-ГўГ® ГўГҐГ°ГёГЁГ­ Гў ГўГҐГІГЄГҐ
 		vector<int> index;
 		while (!rects[k].empty()) {
 			i = find_left_lower_x(rects[k]);
@@ -346,7 +346,7 @@ vector<string> Btree_code(vector <vector<rect*>>& rectangles) {
 					} while (j != i);
 					index.pop_back();
 					nodes_in_branch--;
-					for (j = distance; j < distance + nodes_in_branch; j++) { //ошибка была тут
+					for (j = distance; j < distance + nodes_in_branch; j++) { //Г®ГёГЁГЎГЄГ  ГЎГ»Г«Г  ГІГіГІ
 						T[k] += '0';
 						i = index[j];
 						rectangles[k].push_back(newrect(rects[k][i]->width, rects[k][i]->height, rects[k][i]->x, rects[k][i]->y, rects[k][i]->place));
@@ -364,8 +364,8 @@ vector<string> Btree_code(vector <vector<rect*>>& rectangles) {
 }
 
 vector<string> neighborhood(vector<string> T, vector<vector<rect*>>& rectangles, int& index_h) {
-	int num = size(rectangles); // количество 
-	vector <int> N; //вектор, который хранит индексы непустых полос
+	int num = size(rectangles); // ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® 
+	vector <int> N; //ГўГҐГЄГІГ®Г°, ГЄГ®ГІГ®Г°Г»Г© ГµГ°Г Г­ГЁГІ ГЁГ­Г¤ГҐГЄГ±Г» Г­ГҐГЇГіГ±ГІГ»Гµ ГЇГ®Г«Г®Г±
 	bool empty = false;
 	for (int l = 0; l < num; l++) {
 		if (size(rectangles[l]) != 0) {
@@ -379,30 +379,30 @@ vector<string> neighborhood(vector<string> T, vector<vector<rect*>>& rectangles,
 	else {
 		i = rand() % size(N);
 		i = N[i];
-	} //номер рандомной непустой полосы откуда берем прямоугольник
-	i = index_h; //номер самой высокой полосы
+	} //Г­Г®Г¬ГҐГ° Г°Г Г­Г¤Г®Г¬Г­Г®Г© Г­ГҐГЇГіГ±ГІГ®Г© ГЇГ®Г«Г®Г±Г» Г®ГІГЄГіГ¤Г  ГЎГҐГ°ГҐГ¬ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄ
+	i = index_h; //Г­Г®Г¬ГҐГ° Г±Г Г¬Г®Г© ГўГ»Г±Г®ГЄГ®Г© ГЇГ®Г«Г®Г±Г»
 	int j;
 	if (num - 1 == 0) {
 		j = 0;
 	}
-	else j = rand() % num; // номер рандомной полосы
-	int num1 = size(rectangles[i]); //количество прямоугольников в полосе i
-	int num2 = size(rectangles[j]);//количество прямоугольников в полосе j
+	else j = rand() % num; // Г­Г®Г¬ГҐГ° Г°Г Г­Г¤Г®Г¬Г­Г®Г© ГЇГ®Г«Г®Г±Г»
+	int num1 = size(rectangles[i]); //ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГ®Гў Гў ГЇГ®Г«Г®Г±ГҐ i
+	int num2 = size(rectangles[j]);//ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГ®Гў Гў ГЇГ®Г«Г®Г±ГҐ j
 	int i1;
 	int j1;
 	if (num1 - 1 == 0) {
 		i1 = 0;
 	}
-	else i1 = rand() % num1; //номер рандомного прямоугольника в полосе i
+	else i1 = rand() % num1; //Г­Г®Г¬ГҐГ° Г°Г Г­Г¤Г®Г¬Г­Г®ГЈГ® ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГ  Гў ГЇГ®Г«Г®Г±ГҐ i
 	if (num2 == 0) {
 		j1 = 0;
 	}
 	else if (num2 == -1) {
 		empty = true;
 	}
-	else j1 = rand() % num2/*1*/; //номер рандомного прямоугольника в полосе j
-	if (T[i].substr(rectangles[i][i1]->place, 2) == "01") { //если прямоугольник i,i1 лист
-		T[i].erase(rectangles[i][i1]->place, 2); //то удаляем этот лист из дерева
+	else j1 = rand() % num2/*1*/; //Г­Г®Г¬ГҐГ° Г°Г Г­Г¤Г®Г¬Г­Г®ГЈГ® ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГ  Гў ГЇГ®Г«Г®Г±ГҐ j
+	if (T[i].substr(rectangles[i][i1]->place, 2) == "01") { //ГҐГ±Г«ГЁ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄ i,i1 Г«ГЁГ±ГІ
+		T[i].erase(rectangles[i][i1]->place, 2); //ГІГ® ГіГ¤Г Г«ГїГҐГ¬ ГЅГІГ®ГІ Г«ГЁГ±ГІ ГЁГ§ Г¤ГҐГ°ГҐГўГ 
 		if ((i == j) && (j1 >= i1)) {
 			if (j1 == 0) {
 
@@ -447,14 +447,14 @@ vector<string> neighborhood(vector<string> T, vector<vector<rect*>>& rectangles,
 				T[j].insert(K[k], "01");
 				K.clear();
 			}
-		} //вклиниваем лист на место прямоугольника j,j1
+		} //ГўГЄГ«ГЁГ­ГЁГўГ ГҐГ¬ Г«ГЁГ±ГІ Г­Г  Г¬ГҐГ±ГІГ® ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГ  j,j1
 		rect* tmp = newrect(rectangles[i][i1]->width, rectangles[i][i1]->height, rectangles[i][i1]->x, rectangles[i][i1]->y, rectangles[i][i1]->place);
-		rectangles[i].erase(rectangles[i].cbegin() + i1); //удаляем прямоугольник i1 из полосы i
+		rectangles[i].erase(rectangles[i].cbegin() + i1); //ГіГ¤Г Г«ГїГҐГ¬ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄ i1 ГЁГ§ ГЇГ®Г«Г®Г±Г» i
 		if (empty) {
 			rectangles[j].push_back(tmp);
 		}
 		else
-			rectangles[j].insert(rectangles[j].cbegin() + j1, tmp); //добавляем прямоугольник i1 в полосe j после прямоугольника j1
+			rectangles[j].insert(rectangles[j].cbegin() + j1, tmp); //Г¤Г®ГЎГ ГўГ«ГїГҐГ¬ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄ i1 Гў ГЇГ®Г«Г®Г±e j ГЇГ®Г±Г«ГҐ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГ  j1
 	}
 	else {
 		if (empty) {
@@ -462,7 +462,7 @@ vector<string> neighborhood(vector<string> T, vector<vector<rect*>>& rectangles,
 			j = N[j];
 			j1 = rand() % size(rectangles[j]);
 		}
-		swap(rectangles[i][i1], rectangles[j][j1]); //меняем местами прямоугольники i,i1 и j,j1
+		swap(rectangles[i][i1], rectangles[j][j1]); //Г¬ГҐГ­ГїГҐГ¬ Г¬ГҐГ±ГІГ Г¬ГЁ ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГЁ i,i1 ГЁ j,j1
 	}
 	N.clear();
 	return T;
