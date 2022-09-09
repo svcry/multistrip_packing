@@ -23,14 +23,14 @@ void L_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left
 		c.push_back(newstep(left_W, p->width + left_W, p->height)); //ставим первый прямоугольник в левый нижний угол
 	}
 
-	else if (!flag || s - 1 == size(c)) { //äàëåå ïðÿìîóãîëüíèêè ïåðâîé âåòêè ÈËÈ ïðÿìîóãîëüíèêè ïîä åîòîðûìè íèæå íåò íè÷åãî êðîìå îñè X ñòàâÿòñÿ äðóã çà äðóãîì âïëîòíóþ ïî îñè(çà èñêëþ÷åíèåì âòîðîãî ñëó÷àÿ)
+	else if (!flag || s - 1 == size(c)) { //далее прямоугольники первой ветки ИЛИ прямоугольники под еоторыми ниже нет ничего кроме оси X ставятся друг за другом вплотную по оси(за исключением второго случая)
 		c.push_back(newstep(c[s - 2]->right, c[s - 2]->right + p->width, p->height));
 	}
 
-	else if (flag) { //åñëè íîâàÿ âåòêà (òî åñòü åñëè ïðî÷èòàëè íåñêîëüêî 1 ( â êîë-âå ìåíüøåì ÷åì íóëåé) è ïîòîì ÷èòàåì 0
-		int j = s - 1; //íîìåð ñòóïåíüêè íà êîòîðóþ ñêëàäûâàåì ïðÿìîóãîëüíèê
-		int max_h = c[j]->top; //âûñîòà ýòîé ñòóïåíüêè (ïîêà ÷òî ìàêñèìàëüíàÿ)
-		while (j < size(c) && p->width  > c[j]->right - c[s - 1]->left) { //ïðîñìàòðèâàåì âñå ñòóïåíüêè è ñìîòðèì â êàêóþ íàèáîëåå âûñîêóþ áóäåò óïèðàòüñÿ íûíåøíèé ïðÿìîóãîëüíèê, èñõîäÿ èç åãî âûñîòû
+	else if (flag) { //если новая ветка (то есть если прочитали несколько 1 ( в кол-ве меньшем чем нулей) и потом читаем 0
+		int j = s - 1; //номер ступеньки на которую складываем прямоугольник
+		int max_h = c[j]->top; //высота этой ступеньки (пока что максимальная)
+		while (j < size(c) && p->width  > c[j]->right - c[s - 1]->left) { //просматриваем все ступеньки и смотрим в какую наиболее высокую будет упираться нынешний прямоугольник, исходя из его высоты
 			if (j + 1 == size(c)) {
 				if (c[j]->top > max_h)
 					max_h = c[j]->top;
@@ -46,18 +46,18 @@ void L_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left
 		}
 		if (j == size(c))
 			j--;
-		//ïîñëå ýòîãî öèêëà îïðåäåëèëàñü âûñîòà ñòóïåíüêè, â êîòîðóþ áóäåò óïèðàòüñÿ íûíåøíèé ïðÿìîóãîëüíèê
+		//после этого цикла определилась высота ступеньки, в которую будет упираться нынешний прямоугольник
 		vector<step*> c_new;
 		int k = 0;
 		while (k < s - 1) {
 			c_new.push_back(newstep(c[k]->left, c[k]->right, c[k]->top));
 			k++;
-		} //ñîñòàâëÿåì íîâûé êîíòóð, âñå ñòóïåíüêè, êîòîðûå íàõîäèëèñü äî òîãî ìåñòà êóäà óïàë íûíåøíèé ïðÿìîóãîëüíèê, îñòàþòñÿ íà ìåñòå
-		c_new.push_back(newstep(c[s - 1]->left, p->width + c[s - 1]->left, p->height + max_h)); //äîáàâëÿåì íîâóþ ñòóïåíüêó
-		if (p->width < c[j]->right - c[s - 1]->left) { //åñëè íîâûé ïðÿìîóãîëüíèê çàêðûë ñëåäóþùóþ ñòóïåíüêó íå ïîëíîñòüþ
-			if (j == 0) //åñëè ýòî ïåðâàÿ ñòóïåíüêà, òî âñå, ÷òî ïîä ýòèì ïðÿìîóãîëüíèêîì çàòèðàåòñÿ, à âûñîòà è ïðàâûé óãîë îñòàþòñÿ íåçèìåííûìè
+		} //составляем новый контур, все ступеньки, которые находились до того места куда упал нынешний прямоугольник, остаются на месте
+		c_new.push_back(newstep(c[s - 1]->left, p->width + c[s - 1]->left, p->height + max_h)); //добавляем новую ступеньку
+		if (p->width < c[j]->right - c[s - 1]->left) { //если новый прямоугольник закрыл следующую ступеньку не полностью
+			if (j == 0) //если это первая ступенька, то все, что под этим прямоугольником затирается, а высота и правый угол остаются незименными
 				c_new.push_back(newstep(left_W + p->width, c[j]->right, c[j]->top));
-			else //èíà÷å ëåâûé óãîë íà÷èíàåòñÿ îò îêîí÷àíèÿ ïðåäûäóùåé ñòóïåíüêè, îñòàëüíîå êàê ïðåäûäóùåì ñëó÷àå
+			else //иначе левый угол начинается от окончания предыдущей ступеньки, остальное как предыдущем случае
 				c_new.push_back(newstep(c_new[size(c_new) - 1]->right, c[j]->right, c[j]->top));
 			if (c_new[size(c_new) - 1]->left == c_new[size(c_new) - 1]->right)
 				c_new.pop_back();
@@ -66,8 +66,8 @@ void L_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left
 		while (j + 1 < size(c)) {
 			c_new.push_back(newstep(c[j + 1]->left, c[j + 1]->right, c[j + 1]->top));
 			j++;
-		} //âñå ñëåäóþùèå ñòóïåíüêè ñîõðàíÿþòñÿ íåèçìåííî
-		//äàëåå ïðîñòî çàìåíèëè êîíòóð
+		} //все следующие ступеньки сохраняются неизменно
+		//далее просто заменили контур
 		int d = size(c) - 1;
 		int v = size(c_new) - 1;
 		for (int z = 0; z <= d; z++) {
@@ -122,15 +122,15 @@ vector<vector<step*>> L_decode(const vector<string>& T, vector<vector<rect*>>& r
 
 void B_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left_W) { // b r t
 	if (size(c) == 0) {
-		c.push_back(newstep(0, p->width + left_W, p->height)); //ñòàâèì ïåðâóþ ñòóïåíüêó â (0,0)
+		c.push_back(newstep(0, p->width + left_W, p->height)); //ставим первую ступеньку в (0,0)
 	}
 	else if (!flag || s - 1 == size(c)) {
-		c.push_back(newstep(c[s - 2]->top, p->width + left_W, c[s - 2]->top + p->height)); //äîáàâëÿåì ñòóïåíüêè ïî ïåðâîé âåòêå äåðåâà
+		c.push_back(newstep(c[s - 2]->top, p->width + left_W, c[s - 2]->top + p->height)); //добавляем ступеньки по первой ветке дерева
 	}
 	else if (flag) {
 		int j = s - 1;
 		int max_r = c[j]->right;
-		while (j < size(c) && p->height > c[j]->top - c[s - 1]->left) { //â äàííîå äåêîäèðîâêå ìû ïðÿìîóãîëüíèêè óïèðàåì ìàêñèìàëüíî âëåâî, à ïîòîì óæå äâèãàåì âíèç
+		while (j < size(c) && p->height > c[j]->top - c[s - 1]->left) { //в данное декодировке мы прямоугольники упираем максимально влево, а потом уже двигаем вниз
 			if (j + 1 == size(c)) {
 				if (c[j]->right > max_r)
 					max_r = c[j]->right;
@@ -154,8 +154,8 @@ void B_changecontour(const rect* p, vector<step*>& c, int s, bool flag, int left
 			c_new.push_back(newstep(c[k]->left, c[k]->right, c[k]->top));
 			k++;
 		}
-		c_new.push_back(newstep(c[s - 1]->left, p->width + max_r, p->height + c[s - 1]->left));//íå óâåðåí
-		if (p->height < c[j]->top - c[s - 1]->left) { //åñëè âëåçàåò ïî âûñîòå
+		c_new.push_back(newstep(c[s - 1]->left, p->width + max_r, p->height + c[s - 1]->left));//не уверен
+		if (p->height < c[j]->top - c[s - 1]->left) { //если влезает по высоте
 			if (j == 0)
 				c_new.push_back(newstep(p->height, c[j]->right, c[j]->top));
 			else
@@ -239,7 +239,7 @@ vector<string> Ltree_code(vector <vector<rect*>>& rectangles) {
 		//vector <rect*> r;
 		int i = 0;
 		int distance = 0;
-		int nodes_in_branch = 0; //êîë-âî âåðøèí â âåòêå
+		int nodes_in_branch = 0; //кол-во вершин в ветке
 		vector<int> index;
 		while (!rects[k].empty()) {
 			i = find_left_min_x(rects[k]);
@@ -309,7 +309,7 @@ vector<string> Btree_code(vector <vector<rect*>>& rectangles) {
 		//vector <rect*> r;
 		int i = 0;
 		int distance = 0;
-		int nodes_in_branch = 0; //êîë-âî âåðøèí â âåòêå
+		int nodes_in_branch = 0; //кол-во вершин в ветке
 		vector<int> index;
 		while (!rects[k].empty()) {
 			i = find_left_lower_x(rects[k]);
@@ -346,7 +346,7 @@ vector<string> Btree_code(vector <vector<rect*>>& rectangles) {
 					} while (j != i);
 					index.pop_back();
 					nodes_in_branch--;
-					for (j = distance; j < distance + nodes_in_branch; j++) { //îøèáêà áûëà òóò
+					for (j = distance; j < distance + nodes_in_branch; j++) { 
 						T[k] += '0';
 						i = index[j];
 						rectangles[k].push_back(newrect(rects[k][i]->width, rects[k][i]->height, rects[k][i]->x, rects[k][i]->y, rects[k][i]->place));
@@ -364,8 +364,8 @@ vector<string> Btree_code(vector <vector<rect*>>& rectangles) {
 }
 
 vector<string> neighborhood(vector<string> T, vector<vector<rect*>>& rectangles, int& index_h) {
-	int num = size(rectangles); // êîëè÷åñòâî 
-	vector <int> N; //âåêòîð, êîòîðûé õðàíèò èíäåêñû íåïóñòûõ ïîëîñ
+	int num = size(rectangles); // количество 
+	vector <int> N; //вектор, который хранит индексы непустых полос
 	bool empty = false;
 	for (int l = 0; l < num; l++) {
 		if (size(rectangles[l]) != 0) {
@@ -379,30 +379,30 @@ vector<string> neighborhood(vector<string> T, vector<vector<rect*>>& rectangles,
 	else {
 		i = rand() % size(N);
 		i = N[i];
-	} //íîìåð ðàíäîìíîé íåïóñòîé ïîëîñû îòêóäà áåðåì ïðÿìîóãîëüíèê
-	i = index_h; //íîìåð ñàìîé âûñîêîé ïîëîñû
+	} //номер рандомной непустой полосы откуда берем прямоугольник
+	i = index_h; //номер самой высокой полосы
 	int j;
 	if (num - 1 == 0) {
 		j = 0;
 	}
-	else j = rand() % num; // íîìåð ðàíäîìíîé ïîëîñû
-	int num1 = size(rectangles[i]); //êîëè÷åñòâî ïðÿìîóãîëüíèêîâ â ïîëîñå i
-	int num2 = size(rectangles[j]);//êîëè÷åñòâî ïðÿìîóãîëüíèêîâ â ïîëîñå j
+	else j = rand() % num; // номер рандомной полосы
+	int num1 = size(rectangles[i]); //количество прямоугольников в полосе i
+	int num2 = size(rectangles[j]);//количество прямоугольников в полосе j
 	int i1;
 	int j1;
 	if (num1 - 1 == 0) {
 		i1 = 0;
 	}
-	else i1 = rand() % num1; //íîìåð ðàíäîìíîãî ïðÿìîóãîëüíèêà â ïîëîñå i
+	else i1 = rand() % num1; //номер рандомного прямоугольника в полосе i
 	if (num2 == 0) {
 		j1 = 0;
 	}
 	else if (num2 == -1) {
 		empty = true;
 	}
-	else j1 = rand() % num2/*1*/; //íîìåð ðàíäîìíîãî ïðÿìîóãîëüíèêà â ïîëîñå j
-	if (T[i].substr(rectangles[i][i1]->place, 2) == "01") { //åñëè ïðÿìîóãîëüíèê i,i1 ëèñò
-		T[i].erase(rectangles[i][i1]->place, 2); //òî óäàëÿåì ýòîò ëèñò èç äåðåâà
+	else j1 = rand() % num2/*1*/; //номер рандомного прямоугольника в полосе j
+	if (T[i].substr(rectangles[i][i1]->place, 2) == "01") { //если прямоугольник i,i1 лист
+		T[i].erase(rectangles[i][i1]->place, 2); //то удаляем этот лист из дерева
 		if ((i == j) && (j1 >= i1)) {
 			if (j1 == 0) {
 
@@ -447,14 +447,14 @@ vector<string> neighborhood(vector<string> T, vector<vector<rect*>>& rectangles,
 				T[j].insert(K[k], "01");
 				K.clear();
 			}
-		} //âêëèíèâàåì ëèñò íà ìåñòî ïðÿìîóãîëüíèêà j,j1
+		} //вклиниваем лист на место прямоугольника j,j1
 		rect* tmp = newrect(rectangles[i][i1]->width, rectangles[i][i1]->height, rectangles[i][i1]->x, rectangles[i][i1]->y, rectangles[i][i1]->place);
-		rectangles[i].erase(rectangles[i].cbegin() + i1); //óäàëÿåì ïðÿìîóãîëüíèê i1 èç ïîëîñû i
+		rectangles[i].erase(rectangles[i].cbegin() + i1); //удаляем прямоугольник i1 из полосы i
 		if (empty) {
 			rectangles[j].push_back(tmp);
 		}
 		else
-			rectangles[j].insert(rectangles[j].cbegin() + j1, tmp); //äîáàâëÿåì ïðÿìîóãîëüíèê i1 â ïîëîñe j ïîñëå ïðÿìîóãîëüíèêà j1
+			rectangles[j].insert(rectangles[j].cbegin() + j1, tmp); //добавляем прямоугольник i1 в полосe j после прямоугольника j1
 	}
 	else {
 		if (empty) {
@@ -462,7 +462,7 @@ vector<string> neighborhood(vector<string> T, vector<vector<rect*>>& rectangles,
 			j = N[j];
 			j1 = rand() % size(rectangles[j]);
 		}
-		swap(rectangles[i][i1], rectangles[j][j1]); //ìåíÿåì ìåñòàìè ïðÿìîóãîëüíèêè i,i1 è j,j1
+		swap(rectangles[i][i1], rectangles[j][j1]); //меняем местами прямоугольники i,i1 и j,j1
 	}
 	N.clear();
 	return T;
