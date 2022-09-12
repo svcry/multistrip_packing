@@ -51,7 +51,7 @@ vector<string> create_NFDH_string(vector<vector <rect*>>& rectangles, int W) {
 		int w_level;
 		int i = 1;
 		int count = 1;
-		sort(rectangles[k].begin(), rectangles[k].end(), comp1());
+		sort(rectangles[k].begin(), rectangles[k].end(), [](const rect* a, const rect* b) { return a->height > b->height; });
 		h_level = 0;
 		index_h = 0;
 		w_level = k * W + rectangles[k][0]->width;
