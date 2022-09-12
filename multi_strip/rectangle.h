@@ -13,12 +13,6 @@ struct rect {
 	int place;
 	rect(int w = 0, int h = 0, int x = 0, int y = 0, int p = 0) :width(w), height(h), x(x), y(y), place(p) {}
 };
-struct comp1
-{
-	bool operator()(const rect* a, const rect* b) {
-		return a->height > b->height;
-	}
-};
 rect* newrect(int w, int h, int x, int y, int p);
 vector <rect*> rcopy(vector<rect*>& rectangles);
 vector<vector<rect*>> vrcopy(vector<vector<rect*>>& rectangles);
